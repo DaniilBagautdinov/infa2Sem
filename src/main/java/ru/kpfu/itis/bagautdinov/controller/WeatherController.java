@@ -50,7 +50,7 @@ public class WeatherController {
         List<Request> requestList = requestRepository.findAll();
         String result = "";
         for (Request request : requestList) {
-            if (request.getId() == id) {
+            if (request.getUser().getId() == id) {
                 result += request.toString() + "\n";
             }
         }
