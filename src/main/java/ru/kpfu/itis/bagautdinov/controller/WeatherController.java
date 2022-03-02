@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.kpfu.itis.bagautdinov.model.Request;
 import ru.kpfu.itis.bagautdinov.model.User;
 import ru.kpfu.itis.bagautdinov.model.Weather;
+import ru.kpfu.itis.bagautdinov.repository.RequestRepository;
 import ru.kpfu.itis.bagautdinov.repository.UserRepository;
 import ru.kpfu.itis.bagautdinov.repository.WeatherRepository;
 import ru.kpfu.itis.bagautdinov.service.WeatherService;
@@ -23,17 +25,60 @@ public class WeatherController {
     private final WeatherService weatherService = new WeatherService();
     private final WeatherRepository weatherRepository;
     private final UserRepository userRepository;
+    private final RequestRepository requestRepository;
+
+
     @Autowired
-    public WeatherController(WeatherRepository weatherRepository, UserRepository userRepository) {
+    public WeatherController(WeatherRepository weatherRepository, UserRepository userRepository, RequestRepository requestRepository) {
         this.weatherRepository = weatherRepository;
         this.userRepository = userRepository;
+        this.requestRepository = requestRepository;
     }
 
 
+
     @GetMapping("/weather")
-    public Weather addWeather(@Valid @RequestParam Optional<String> city) throws IOException {
+    public Weather addWeather(@Valid @RequestParam Optional<String> city, @RequestParam int user_id) throws IOException {
         Map<String, String> result = weatherService.get(city.orElse("Kazan"));
-        return weatherRepository.save(new Weather(result.get("name"), result.get("temp"), result.get("feels_like"), result.get("wind_speed"), new Date().getTime()));
+        Weather weather = new Weather(result.get("name"), result.get("temp"), result.get("feels_like"), result.get("wind_speed"), new Date().getTime());
+        requestRepository.save(new Request(userRepository.getById(user_id), weather, result.get("name")));
+        return weatherRepository.save(weather);
+    }
+
+    @GetMapping("/getAllRequestById")
+    public String getAllRequestByID(@RequestParam int id) {
+        List<Request> requestList = requestRepository.findAll();
+        String result = "";
+        for (Request request : requestList) {
+            if (request.getId() == id) {
+                result += request.toString() + "\n";
+            }
+        }
+        return result;
+    }
+
+    @GetMapping("/getAllRequestByCity")
+    public String getAllRequestByCity(@RequestParam String city) {
+        List<Request> requestList = requestRepository.findAll();
+        String result = "";
+        for (Request request : requestList) {
+            if (request.getCity().equals(city)) {
+                result += request.toString() + "\n";
+            }
+        }
+        return result;
+    }
+
+    @GetMapping("/getAllWeatherByCity")
+    public String getAllWeatherByCity(@RequestParam String city) {
+        List<Weather> weatherList = weatherRepository.findAll();
+        String result = "";
+        for (Weather weather : weatherList) {
+            if (weather.getName().equals(city)) {
+                result += weather.toString() + "\n";
+            }
+        }
+        return result;
     }
 
     @GetMapping("/getWeather")

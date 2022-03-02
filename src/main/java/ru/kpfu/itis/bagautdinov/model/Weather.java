@@ -1,8 +1,6 @@
 package ru.kpfu.itis.bagautdinov.model;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "weather")
@@ -22,6 +20,9 @@ public class Weather {
 
     private long time;
 
+    @OneToOne(mappedBy = "weather")
+    private Request request;
+
     public Weather(String name, String temp, String feelsLike, String windSpeed, long time) {
         this.name = name;
         this.temp = temp;
@@ -34,6 +35,22 @@ public class Weather {
 
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
     @Override
     public String toString() {
         return "Weather{" +
@@ -44,6 +61,7 @@ public class Weather {
                 ", time=" + time +
                 '}';
     }
+
 
     public Integer getId() {
         return id;

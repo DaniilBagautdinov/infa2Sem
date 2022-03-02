@@ -2,6 +2,7 @@ package ru.kpfu.itis.bagautdinov.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.List;
 
 
 @Entity
@@ -14,9 +15,13 @@ public class User {
     private String name;
 
     @Email
+    @Column(unique = true)
     private String email;
 
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Request> requestList;
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -35,6 +40,15 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+
+    public List<Request> getRequestList() {
+        return requestList;
+    }
+
+    public void setRequestList(List<Request> requestList) {
+        this.requestList = requestList;
     }
 
     public String getPassword() {
