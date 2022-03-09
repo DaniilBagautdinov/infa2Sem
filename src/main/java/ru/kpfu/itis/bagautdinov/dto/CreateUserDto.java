@@ -12,6 +12,10 @@ public class CreateUserDto {
 
     private String password;
 
+    public CreateUserDto() {
+
+    }
+
     public String getPassword() {
         return password;
     }
