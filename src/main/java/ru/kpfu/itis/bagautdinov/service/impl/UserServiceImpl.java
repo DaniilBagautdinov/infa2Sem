@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService {
         this.mailConfig = mailConfig;
     }
 
+
+
     @Override
     public UserDto getByEmail(String email) {
         Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
