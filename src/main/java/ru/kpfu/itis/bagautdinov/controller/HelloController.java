@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.kpfu.itis.bagautdinov.dto.CreateUserDto;
 import ru.kpfu.itis.bagautdinov.repository.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Controller
@@ -32,8 +33,23 @@ public class HelloController {
         return "sign_up";
     }
 
+    //    @GetMapping("/home")
+    //    public String getHome(Principal principal) {
+    //        String currentPrincipalName = principal.getName();
+    //        return "home";
+    //    }
+
+    //    @GetMapping("/home")
+    //    public String getHome(Authentication authentication) {
+    //        String currentPrincipalName = authentication.getName();
+    //        return "home";
+    //    }
+
     @GetMapping("/home")
-    public String getHome() {
-        return "home";
+    public String getHome(HttpServletRequest httpServletRequest) {
+        String currentPrincipalName = httpServletRequest.getUserPrincipal().getName();
+        {
+            return "home";
+        }
     }
 }

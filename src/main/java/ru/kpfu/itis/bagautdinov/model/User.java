@@ -16,6 +16,11 @@ public class User {
 
     private String name;
 
+    private boolean enabled;
+
+    @Column(length = 64)
+    private String verificationCode;
+
     @Email
     @Column(unique = true)
     private String email;
@@ -105,6 +110,29 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public User(String name, String email, String verificationCode, String password) {
+        this.name = name;
+        this.email = email;
+        this.verificationCode = verificationCode;
+        this.password = password;
     }
 
 }

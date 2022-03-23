@@ -1,6 +1,7 @@
 package ru.kpfu.itis.bagautdinov.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.bagautdinov.dto.CreateUserDto;
@@ -10,6 +11,7 @@ import ru.kpfu.itis.bagautdinov.model.User;
 import ru.kpfu.itis.bagautdinov.repository.UserRepository;
 import ru.kpfu.itis.bagautdinov.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,11 +39,11 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @PostMapping("/user")
-    @ResponseBody
-    public UserDto createUser(@Valid @RequestBody CreateUserDto user) {
-        return userService.save(user);
-    }
+    //    @PostMapping("/user")
+    //    @ResponseBody
+    //    public UserDto createUser(@Valid @RequestBody CreateUserDto user) {
+    //        return userService.signUp(user);
+    //    }
 
     @GetMapping("/user/stepan")
     @ResponseBody
@@ -49,9 +51,18 @@ public class UserController {
         return userService.getAllStepan();
     }
 
-    @PostMapping("/sign_up")
-    public String signUp(@ModelAttribute(name = "user") CreateUserDto userDto) {
-        userService.save(userDto);
+    public String signUp(@ModelAttribute(name = "user") CreateUserDto userDto, HttpServletRequest request) {
+        String url = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        userService.signUp(userDto, url);
         return "sign_up_success";
+    }
+
+    @GetMapping("/verify")
+    public String verify(@Param("code") String code) {
+        if (userService.verify(code)) {
+            return "verification_success";
+        } else {
+            return "verification_failed";
+        }
     }
 }
